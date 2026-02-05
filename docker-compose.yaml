@@ -1,0 +1,36 @@
+services:
+  task-manager-mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - task_manager_mysql_data:/var/lib/mysql
+    networks:
+      - task_manager_network
+
+  task-manager-phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: task-manager-mysql
+      PMA_USER: ${MYSQL_USER}
+      PMA_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "8080:80"
+    depends_on:
+      - task-manager-mysql
+    networks:
+      - task_manager_network
+
+volumes:
+  task_manager_mysql_data:
+
+networks:
+  task_manager_network:
+    driver: bridge
