@@ -12,6 +12,11 @@ security:
             # Ensure dev tools and static assets are always allowed
             pattern: ^/(_profiler|_wdt|assets|build)/
             security: false
+        api_platform:
+            pattern: ^/api
+            stateless: true
+            provider: users_in_memory
+
         main:
             lazy: true
             provider: users_in_memory
@@ -26,6 +31,8 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/api, roles: PUBLIC_ACCESS }
+    
 
 when@test:
     security:
