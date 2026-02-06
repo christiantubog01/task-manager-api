@@ -14,12 +14,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity]
 #[ApiResource(
     operations: [
-        new Get(
-            normalizationContext: ['groups' => ['task:read']]
-        ),
-        new GetCollection(
-            normalizationContext: ['groups' => ['task:read']]
-        ),
+        new Get(normalizationContext: ['groups' => ['task:read']]),
+        new GetCollection(normalizationContext: ['groups' => ['task:read']]),
         new Post(
             denormalizationContext: ['groups' => ['task:write']],
             normalizationContext: ['groups' => ['task:read']]
@@ -29,8 +25,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             normalizationContext: ['groups' => ['task:read']]
         ),
         new Delete()
-    ],
-    routePrefix: '/api'
+    ]
 )]
 class Task
 {
@@ -52,9 +47,14 @@ class Task
     #[Groups(['task:read', 'task:write'])]
     private bool $isCompleted = false;
 
-    // ==========================
-    // Getters & Setters
-    // ==========================
+    #[ORM\Column(nullable: true)]
+    #[Groups(['task:read'])]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
@@ -69,7 +69,6 @@ class Task
     public function setTitle(string $title): self
     {
         $this->title = $title;
-
         return $this;
     }
 
@@ -81,7 +80,6 @@ class Task
     public function setDescription(?string $description): self
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -93,7 +91,14 @@ class Task
     public function setIsCompleted(bool $isCompleted): self
     {
         $this->isCompleted = $isCompleted;
-
         return $this;
     }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
 }
+
+
+// done
